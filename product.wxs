@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package Name="YourProductName" Version="1.0.0" Manufacturer="YourCompanyName" UpgradeCode="bc2eec90-4f60-40ee-b760-922e0dfc9fe9">
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+
+    <MediaTemplate EmbedCab="yes" />
+
+    <Feature Id="ProductFeature" Title="YourProductName" Level="1">
+      <ComponentGroupRef Id="ProductComponents" />
+    </Feature>
+  </Package>
+
+  <Fragment>
+    <StandardDirectory Id="ProgramFilesFolder">
+      <Directory Id="INSTALLFOLDER" Name="YourProductName" />
+    </StandardDirectory>
+  </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+      <Component Id="PowerShellScriptComponent" Guid="*">
+        <File Id="PowerShellScriptFile" Source="YourPowerShellScript.ps1" KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+
+  <Fragment>
+ 
+ 
+ 
+ 
+<CustomAction 
+    Id="RunPowerShellScript" 
+    Directory="INSTALLFOLDER" 
+    Execute="deferred" 
+    Impersonate="no" 
+    Return="check" 
+    ExeCommand="powershell.exe 
+    -ExecutionPolicy 
+    Bypass 
+    -File 
+    &quot;[#PowerShellScriptFile]&quot;" 
+/>
+
+    <InstallExecuteSequence>
+<Custom Action="RunPowerShellScript" After="InstallFiles" Condition="NOT Installed" />
+    </InstallExecuteSequence>
+  </Fragment>
+</Wix>
